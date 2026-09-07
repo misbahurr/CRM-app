@@ -1,23 +1,39 @@
-import { useEffect, useMemo, useState } from 'react'
-import { api } from '../api/client'
+import { useEffect, useState } from 'react'
+import { PAGE_SIZE, api } from '../api/client'
 import { CustomerCard } from '../components/CustomerCard'
 import { LoadingSkeleton } from '../components/LoadingSkeleton'
 import { PriorityFilterBar } from '../components/PriorityFilterBar'
-import type { CustomerSummary, PriorityFilter } from '../types'
+import type { CustomerSummary, FilterCounts, PriorityFilter } from '../types'
+
+const EMPTY_COUNTS: FilterCounts = {
+  all: 0,
+  attention: 0,
+  prospects: 0,
+  customers: 0,
+}
 
 export function Dashboard() {
   const [customers, setCustomers] = useState<CustomerSummary[]>([])
   const [filter, setFilter] = useState<PriorityFilter>('all')
+  const [counts, setCounts] = useState<FilterCounts>(EMPTY_COUNTS)
+  const [total, setTotal] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
     setLoading(true)
+    setError(null)
     api
-      .listCustomers()
-      .then((rows) => {
-        if (!cancelled) setCustomers(rows)
+      .listCustomers({ filter, limit: PAGE_SIZE, offset: 0 })
+      .then((page) => {
+        if (cancelled) return
+        setCustomers(page.items)
+        setCounts(page.counts)
+        setTotal(page.total)
+        setHasMore(page.has_more)
       })
       .catch((err: unknown) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load')
@@ -28,26 +44,27 @@ export function Dashboard() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [filter])
 
-  const counts = useMemo(
-    () => ({
-      all: customers.length,
-      attention: customers.filter((c) => c.priority_score >= 70).length,
-      prospects: customers.filter((c) => c.status === 'prospect').length,
-      customers: customers.filter((c) => c.status === 'customer').length,
-    }),
-    [customers],
-  )
-
-  const visible = useMemo(() => {
-    return customers.filter((customer) => {
-      if (filter === 'attention') return customer.priority_score >= 70
-      if (filter === 'prospects') return customer.status === 'prospect'
-      if (filter === 'customers') return customer.status === 'customer'
-      return true
-    })
-  }, [customers, filter])
+  async function loadMore() {
+    setLoadingMore(true)
+    try {
+      const page = await api.listCustomers({
+        filter,
+        limit: PAGE_SIZE,
+        offset: customers.length,
+      })
+      setCustomers((current) => {
+        const seen = new Set(current.map((row) => row.id))
+        return [...current, ...page.items.filter((row) => !seen.has(row.id))]
+      })
+      setCounts(page.counts)
+      setTotal(page.total)
+      setHasMore(page.has_more)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   const usingFallback = customers.some((c) =>
     c.priority_reason.startsWith('No AI score yet'),
@@ -106,14 +123,26 @@ export function Dashboard() {
             Could not load the feed. Is the API running on port 8001?
           </p>
         ) : null}
-        {!loading && !error && visible.length === 0 ? (
+        {!loading && !error && customers.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-line px-4 py-10 text-center text-sm text-muted">
             No practices match this filter.
           </p>
         ) : null}
-        {visible.map((customer, index) => (
+        {customers.map((customer, index) => (
           <CustomerCard key={customer.id} customer={customer} rank={index + 1} />
         ))}
+        {hasMore ? (
+          <button
+            type="button"
+            onClick={() => void loadMore()}
+            disabled={loadingMore}
+            className="w-full rounded-2xl border border-line bg-card py-3 text-sm font-medium text-teal-dark hover:border-teal/40 disabled:opacity-60"
+          >
+            {loadingMore
+              ? 'Loading…'
+              : `Load more (${customers.length} of ${total})`}
+          </button>
+        ) : null}
       </div>
     </div>
   )

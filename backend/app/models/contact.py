@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 class Contact(Base):
     __tablename__ = "contacts"
+    __table_args__ = (Index("ix_contacts_email", "email"),)
 
     id: Mapped[str] = mapped_column(String(20), primary_key=True)
     customer_id: Mapped[str] = mapped_column(

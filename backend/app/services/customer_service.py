@@ -2,18 +2,22 @@ from __future__ import annotations
 
 import json
 
+from datetime import date
+
 from sqlalchemy.orm import Session
 
 from app.models.ai_insight import AIInsight
 from app.models.customer import Customer
 from app.models.interaction import Interaction
 from app.repositories.ai_insight import AIInsightRepository
-from app.repositories.customer import CustomerRepository
+from app.repositories.customer import CustomerRepository, ListFilter
 from app.repositories.interaction import InteractionRepository
 from app.schemas.customer import (
     ContactOut,
     CustomerDetailOut,
+    CustomerListOut,
     CustomerSummaryOut,
+    FilterCountsOut,
     InsightOut,
     InteractionOut,
 )
@@ -29,22 +33,33 @@ class CustomerService:
         self.ai_service = AIService()
         self.priority_service = PriorityService(self.ai_service)
 
-    def list_customers_with_priority(self) -> list[CustomerSummaryOut]:
-        customers = self.customer_repo.get_all()
+    def list_customers_with_priority(
+        self,
+        *,
+        list_filter: ListFilter = "all",
+        limit: int = 20,
+        offset: int = 0,
+    ) -> CustomerListOut:
+        rows = self.customer_repo.list_page(
+            list_filter=list_filter, limit=limit, offset=offset
+        )
         summaries: list[CustomerSummaryOut] = []
-        for customer in customers:
-            interactions = self.interaction_repo.get_by_customer(customer.id)
-            insight = self.insight_repo.get_by_customer(customer.id)
+        for row in rows:
+            customer = row.customer
+            insight = row.insight
             stale_placeholder = bool(
                 insight
                 and self.ai_service.enabled
                 and (insight.priority_reason or "").startswith("No AI score yet")
             )
             if insight is None or insight.priority_score is None or stale_placeholder:
+                interactions = self.interaction_repo.get_by_customer(customer.id)
                 insight = self._generate_priority_only(customer, interactions)
+                if not row.last_interaction_at and interactions:
+                    row.last_interaction_at = max(i.occurred_at for i in interactions)
 
-            last_at = max((i.occurred_at for i in interactions), default=None)
-            days = self.priority_service.days_since_last(interactions)
+            last_at = row.last_interaction_at
+            days = None if last_at is None else max(0, (date.today() - last_at).days)
             summaries.append(
                 CustomerSummaryOut(
                     id=customer.id,
@@ -57,8 +72,17 @@ class CustomerService:
                     days_since_last=days,
                 )
             )
-        summaries.sort(key=lambda row: row.priority_score, reverse=True)
-        return summaries
+
+        total = self.customer_repo.count_filtered(list_filter)
+        counts = self.customer_repo.filter_counts()
+        return CustomerListOut(
+            items=summaries,
+            total=total,
+            limit=limit,
+            offset=offset,
+            has_more=offset + len(summaries) < total,
+            counts=FilterCountsOut(**counts),
+        )
 
     def get_customer_detail(self, customer_id: str) -> CustomerDetailOut | None:
         detail = self.customer_repo.get_with_relations(customer_id)

@@ -308,3 +308,23 @@ App
 | Vite | `npm run dev` | 5173, proxy `/api` → 8001 |
 
 Config is loaded from the repo-root `.env` (`backend/app/config.py`). Copy `.env.example` and set `OPENAI_API_KEY`.
+
+---
+
+## 6. Indexes and pagination
+
+Indexes (Alembic `002_scale_indexes`):
+
+| Index | Why |
+|---|---|
+| `customers(status)` | Prospect / customer filters |
+| `customers(name)` | Stable sort tie-break |
+| `ai_insights(priority_score)` | Order by urgency, “needs attention” count |
+| `interactions(customer_id, occurred_at)` | Timeline + last-contact subquery |
+| `interactions(contact_id)` | FK lookups |
+| `contacts(email)` | Future search |
+
+`GET /api/customers` is paginated (`limit` default 20, max 100, `offset`, `filter`). The feed with 12 practices still fits on one page — **Load more** only appears when `has_more` is true. Filter counts come from SQL aggregates, not the current page.
+
+`GET /api/interactions` is paginated the same way (`limit` default 50). Detail still returns the full timeline for a single practice (typical volume is small).
+

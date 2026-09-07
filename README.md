@@ -113,11 +113,11 @@ Results are stored one row per customer in `ai_insights`. The feed does not re-c
 | Method | Route | Purpose |
 |---|---|---|
 | GET | `/health` | Liveness |
-| GET | `/api/customers` | List with priority, sorted by score desc |
+| GET | `/api/customers` | Paginated list. Query: `filter`, `limit` (1–100, default 20), `offset`. Returns `{ items, total, has_more, counts }` |
 | GET | `/api/customers/{id}` | Contacts + timeline |
 | GET | `/api/customers/{id}/insights` | Cached or generated summary / action |
 | POST | `/api/customers/{id}/insights/refresh` | Force regenerate |
-| GET | `/api/interactions?customer_id=` | Raw timeline |
+| GET | `/api/interactions?customer_id=` | Paginated timeline. Query: `limit` (default 50), `offset` |
 
 ---
 

@@ -15,6 +15,7 @@ class Interaction(Base):
     __tablename__ = "interactions"
     __table_args__ = (
         Index("ix_interactions_customer_occurred", "customer_id", "occurred_at"),
+        Index("ix_interactions_contact_id", "contact_id"),
     )
 
     id: Mapped[str] = mapped_column(String(20), primary_key=True)

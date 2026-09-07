@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 class AIInsight(Base):
     __tablename__ = "ai_insights"
+    __table_args__ = (Index("ix_ai_insights_priority_score", "priority_score"),)
 
     customer_id: Mapped[str] = mapped_column(
         String(20), ForeignKey("customers.id"), primary_key=True

@@ -1,20 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Literal
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas.customer import CustomerDetailOut, CustomerSummaryOut, InsightOut
+from app.schemas.customer import (
+    CustomerDetailOut,
+    CustomerListOut,
+    InsightOut,
+)
 from app.services.customer_service import CustomerService
 
 router = APIRouter(tags=["customers"])
+
+ListFilter = Literal["all", "attention", "prospects", "customers"]
 
 
 def _service(db: Session = Depends(get_db)) -> CustomerService:
     return CustomerService(db)
 
 
-@router.get("/customers", response_model=list[CustomerSummaryOut])
-def list_customers(service: CustomerService = Depends(_service)) -> list[CustomerSummaryOut]:
-    return service.list_customers_with_priority()
+@router.get("/customers", response_model=CustomerListOut)
+def list_customers(
+    list_filter: ListFilter = Query("all", alias="filter"),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    service: CustomerService = Depends(_service),
+) -> CustomerListOut:
+    return service.list_customers_with_priority(
+        list_filter=list_filter, limit=limit, offset=offset
+    )
 
 
 @router.get("/customers/{customer_id}", response_model=CustomerDetailOut)

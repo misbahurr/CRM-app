@@ -36,6 +36,30 @@ class CustomerSummaryOut(BaseModel):
     days_since_last: int | None
 
 
+class FilterCountsOut(BaseModel):
+    all: int
+    attention: int
+    prospects: int
+    customers: int
+
+
+class CustomerListOut(BaseModel):
+    items: list[CustomerSummaryOut]
+    total: int
+    limit: int
+    offset: int
+    has_more: bool
+    counts: FilterCountsOut
+
+
+class InteractionListOut(BaseModel):
+    items: list[InteractionOut]
+    total: int
+    limit: int
+    offset: int
+    has_more: bool
+
+
 class CustomerDetailOut(BaseModel):
     id: str
     name: str

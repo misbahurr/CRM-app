@@ -13,6 +13,22 @@ export type CustomerSummary = {
   days_since_last: number | null
 }
 
+export type FilterCounts = {
+  all: number
+  attention: number
+  prospects: number
+  customers: number
+}
+
+export type CustomerListResponse = {
+  items: CustomerSummary[]
+  total: number
+  limit: number
+  offset: number
+  has_more: boolean
+  counts: FilterCounts
+}
+
 export type Contact = {
   id: string
   customer_id: string
@@ -29,6 +45,14 @@ export type Interaction = {
   type: InteractionType
   occurred_at: string
   notes: string | null
+}
+
+export type InteractionListResponse = {
+  items: Interaction[]
+  total: number
+  limit: number
+  offset: number
+  has_more: boolean
 }
 
 export type CustomerDetail = {

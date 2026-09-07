@@ -46,7 +46,8 @@ class AIService:
         payload = self._timeline(interactions)
         data = self._complete(
             system=(
-                "You are a CRM analyst for a dental-industry supplier. "
+                "You are a CRM analyst for a small-business owner who sells an AI phone, "
+                "scheduling, and call-summary product to dental practices. "
                 "Return JSON only: {\"summary\": \"2-3 sentences on where things stand\"}."
             ),
             user=f"Interaction timeline (newest first):\n{payload}",
@@ -59,7 +60,9 @@ class AIService:
         payload = self._timeline(interactions)
         data = self._complete(
             system=(
-                "You are a practical CRM coach for a small-business owner selling to dental practices. "
+                "You are a practical CRM coach for a small-business owner selling AI answering "
+                "and scheduling to dental practices. "
+                "Honor explicit notes like 'do not push' or 'no additional follow-up'. "
                 "Return JSON only: "
                 '{"action": "one concrete next step", "drafted_message": "optional short email/SMS draft or null"}.'
             ),
@@ -82,10 +85,13 @@ class AIService:
         last = interactions[0].occurred_at.isoformat() if interactions else "never"
         data = self._complete(
             system=(
-                "You score CRM urgency for a dental-industry supplier. "
+                "You score CRM urgency for a small-business owner selling an AI phone/scheduling "
+                "product to dental practices. "
                 "A satisfied customer who has been quiet for months is NOT urgent. "
-                "A prospect who went cold after a proposal or demo IS urgent. "
-                "Score 0-100 where 80+ needs attention now, 40-79 worth a check-in, under 40 healthy/quiet. "
+                "A prospect who went cold after a proposal, pricing, or an unbooked demo IS urgent. "
+                "A high-intent prospect with an onboarding deadline is urgent even if last contact was recent. "
+                "If notes say not to push or that no follow-up is required, score that as healthy/low. "
+                "Score 0-100 where 70+ needs attention now, 40-69 worth a check-in, under 40 healthy/quiet. "
                 "Return JSON only: {\"score\": int, \"reason\": \"one-line why\"}."
             ),
             user=(

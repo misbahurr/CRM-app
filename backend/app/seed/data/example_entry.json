@@ -1,0 +1,26 @@
+{
+  "customer": {
+    "id": "cust_013",
+    "name": "Harbor View Family Dental",
+    "status": "prospect",
+    "created_at": "2026-09-01"
+  },
+  "contacts": [
+    {
+      "id": "contact_016",
+      "name": "Anna Reyes",
+      "email": "anna@harborview.example",
+      "role": "Owner"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "int_057",
+      "contact_id": "contact_016",
+      "type": "email",
+      "occurred_at": "2026-09-03",
+      "notes": "Anna asked for pricing and wanted a demo next week."
+    }
+  ],
+  "generate_insights": false
+}

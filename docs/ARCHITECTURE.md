@@ -112,7 +112,7 @@ classDiagram
 | AIService | `backend/app/services/ai_service.py` |
 | Routers | `backend/app/routers/customers.py`, `interactions.py` |
 
-`PriorityService.compute()`: `score = round(0.4 * recency + 0.6 * ai)`. Recency is days since last interaction scaled to 0–100 (90 days = 100). If the model is off or errors, the feed still returns recency-only scores.
+`PriorityService.compute()`: `score = round(0.25 * recency + 0.75 * ai)`. Recency is days since last interaction scaled to 0–100 (90 days = 100). If the model is off or errors, the feed still returns recency-only scores. Needs-attention filter is `priority_score >= 60`.
 
 `AIService` is the only place that constructs the OpenAI client. `sk-or-` keys use `https://openrouter.ai/api/v1` unless `OPENAI_BASE_URL` is set.
 

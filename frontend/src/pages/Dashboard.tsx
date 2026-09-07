@@ -100,11 +100,11 @@ export function Dashboard() {
       <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
         <span>
           <span className="mr-1 inline-block h-2 w-2 rounded-full bg-urgent" />
-          Needs attention (70+)
+          Needs attention (60+)
         </span>
         <span>
           <span className="mr-1 inline-block h-2 w-2 rounded-full bg-watch" />
-          Check in soon (40–69)
+          Check in soon (40–59)
         </span>
         <span>
           <span className="mr-1 inline-block h-2 w-2 rounded-full bg-healthy" />

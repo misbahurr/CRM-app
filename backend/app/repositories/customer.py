@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.models.ai_insight import AIInsight
 from app.models.customer import Customer
 from app.models.interaction import Interaction
+from app.services.priority_service import ATTENTION_MIN
 
 ListFilter = Literal["all", "attention", "prospects", "customers"]
 
@@ -109,7 +110,7 @@ class CustomerRepository:
             self.db.scalar(
                 select(func.count())
                 .select_from(AIInsight)
-                .where(AIInsight.priority_score >= 70)
+                .where(AIInsight.priority_score >= ATTENTION_MIN)
             )
             or 0
         )
@@ -127,5 +128,5 @@ class CustomerRepository:
         if list_filter == "customers":
             return stmt.where(Customer.status == "customer")
         if list_filter == "attention":
-            return stmt.where(AIInsight.priority_score >= 70)
+            return stmt.where(AIInsight.priority_score >= ATTENTION_MIN)
         return stmt

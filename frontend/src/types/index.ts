@@ -75,7 +75,7 @@ export type Insight = {
 }
 
 export function priorityLevel(score: number): 'high' | 'medium' | 'low' {
-  if (score >= 70) return 'high'
+  if (score >= 60) return 'high'
   if (score >= 40) return 'medium'
   return 'low'
 }

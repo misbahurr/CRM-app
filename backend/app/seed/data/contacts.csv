@@ -1,0 +1,21 @@
+id,customer_id,name,email,role
+CON-001,CUS-001,Dr. Maya Patel,maya.patel@brightsmile.example,Owner
+CON-002,CUS-001,Luis Ortega,luis.ortega@brightsmile.example,Office Manager
+CON-003,CUS-002,Dr. Hannah Cho,hannah.cho@harborpedo.example,Owner
+CON-004,CUS-002,Priya Shah,priya.shah@harborpedo.example,Practice Administrator
+CON-005,CUS-003,Dr. Eli Navarro,eli.navarro@oakpine.example,Owner
+CON-006,CUS-003,Jordan Blake,jordan.blake@oakpine.example,Procurement
+CON-007,CUS-004,Dr. Sofia Rahman,sofia.rahman@lakesideortho.example,Owner
+CON-008,CUS-004,Chris Nguyen,chris.nguyen@lakesideortho.example,Billing Lead
+CON-009,CUS-005,Dr. Owen Brooks,owen.brooks@summitimplant.example,Clinical Director
+CON-010,CUS-006,Dr. Lena Hart,lena.hart@cedarridge.example,Owner
+CON-011,CUS-006,Marcus Lee,marcus.lee@cedarridge.example,Office Manager
+CON-012,CUS-007,Dr. Nina Volkov,nina.volkov@northstarendo.example,Owner
+CON-013,CUS-008,Dr. Andre Silva,andre.silva@willowcreek.example,Owner
+CON-014,CUS-008,Kim Park,kim.park@willowcreek.example,Surgical Coordinator
+CON-015,CUS-009,Dr. Rachel Kim,rachel.kim@metrodental.example,Managing Partner
+CON-016,CUS-009,Tom Alvarez,tom.alvarez@metrodental.example,Ops Manager
+CON-017,CUS-010,Dr. Amira Hassan,amira.hassan@sunshinesmiles.example,Owner
+CON-018,CUS-011,Dr. Peter Lang,peter.lang@pinecrestperio.example,Owner
+CON-019,CUS-012,Dr. Claire Bennett,claire.bennett@riverbend.example,Owner
+CON-020,CUS-012,Sam Ortiz,sam.ortiz@riverbend.example,Front Desk Lead

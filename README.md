@@ -15,6 +15,18 @@ The UI is **read-only**. Data comes from seeded CSVs (12 dental practices with s
 
 ---
 
+## Screenshots
+
+Priority feed — ranked cards, AI “why”, last recorded contact, and filters:
+
+![Priority feed](docs/screenshots/dashboard.png)
+
+Practice detail — AI summary, suggested next action, copyable draft, and recorded timeline:
+
+![Practice detail](docs/screenshots/detail.png)
+
+---
+
 ## Stack
 
 - **Frontend:** React 19, Vite, TypeScript, Tailwind, React Router
@@ -128,27 +140,6 @@ CRM-app/
     ├── components/         # cards, badges, AI panel, timeline
     └── api/client.ts
 ```
-
----
-
-## Screenshots
-
-**Not required** for the app to run, and not required for Git to be valid.
-
-For a **take-home or GitHub reviewer**, two images are worth adding. They make the product obvious in 10 seconds and support the “AI vs recorded data” story. Three or more is usually noise.
-
-If you add them:
-
-1. Create `docs/screenshots/`.
-2. Capture **dashboard** (ranked feed + Why (AI) on a card) and **detail** (AI panel + timeline).
-3. Drop in `docs/screenshots/dashboard.png` and `docs/screenshots/detail.png`, then uncomment the image lines below.
-
-```markdown
-![Priority feed](docs/screenshots/dashboard.png)
-![Practice detail](docs/screenshots/detail.png)
-```
-
-Keep files small (WebP or compressed PNG). Do not commit `.env` or API keys.
 
 ---
 

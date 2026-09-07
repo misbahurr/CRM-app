@@ -14,7 +14,7 @@ export default function App() {
               </p>
               <p className="font-heading text-xl leading-tight text-ink">Micro-CRM</p>
             </Link>
-            <p className="max-w-[11rem] text-right text-sm leading-snug text-muted">
+            <p className="shrink-0 text-right text-sm text-muted whitespace-nowrap">
               Who needs a conversation today
             </p>
           </div>

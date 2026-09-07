@@ -72,6 +72,8 @@ npm run dev
 
 Ports **3307** and **8001** avoid colliding with a local MySQL on 3306 or another API on 8000.
 
+**Database dump:** [db/microcrm.sql](db/microcrm.sql) is a full MySQL dump (schema + seed + cached insights). Restore with `docker exec -i microcrm-mysql mysql -uroot -ppassword < db/microcrm.sql` — see [db/README.md](db/README.md). After a restore you can skip Alembic and the seed script.
+
 Without a working key the app still runs: the feed uses recency-only scores (quiet accounts can look urgent). After you add a key, reload the dashboard (placeholder scores are regenerated) and click **Refresh insights** on a practice for a real summary.
 
 Reseed: `FORCE_SEED=1 python -m app.seed.seed_data` from `backend/`.
@@ -127,6 +129,7 @@ Results are stored one row per customer in `ai_insights`. The feed does not re-c
 CRM-app/
 ├── docker-compose.yml      # MySQL 8 only
 ├── .env.example
+├── db/microcrm.sql         # MySQL dump (schema + data)
 ├── docs/                   # architecture, design, build plan
 ├── backend/app/
 │   ├── main.py             # FastAPI + CORS

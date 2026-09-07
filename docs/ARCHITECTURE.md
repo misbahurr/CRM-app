@@ -128,33 +128,33 @@ erDiagram
     CUSTOMERS ||--o| AI_INSIGHTS : caches
 
     CUSTOMERS {
-        varchar id PK
-        varchar name
-        enum status
+        string id PK
+        string name
+        string status
         date created_at
     }
     CONTACTS {
-        varchar id PK
-        varchar customer_id FK
-        varchar name
-        varchar email
-        varchar role
+        string id PK
+        string customer_id FK
+        string name
+        string email
+        string role
     }
     INTERACTIONS {
-        varchar id PK
-        varchar customer_id FK
-        varchar contact_id FK
-        enum type
+        string id PK
+        string customer_id FK
+        string contact_id FK
+        string type
         date occurred_at
-        text notes
+        string notes
     }
     AI_INSIGHTS {
-        varchar customer_id PK_FK
-        text summary
-        text next_action
+        string customer_id PK
+        string summary
+        string next_action
         int priority_score
-        text priority_reason
-        datetime generated_at
+        string priority_reason
+        date generated_at
     }
 ```
 

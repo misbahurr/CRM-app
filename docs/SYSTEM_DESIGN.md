@@ -18,38 +18,40 @@ erDiagram
     CUSTOMERS ||--o| AI_INSIGHTS : has
 
     CUSTOMERS {
-        varchar id PK
-        varchar name
-        enum status "prospect | customer"
+        string id PK
+        string name
+        string status
         date created_at
     }
 
     CONTACTS {
-        varchar id PK
-        varchar customer_id FK
-        varchar name
-        varchar email
-        varchar role
+        string id PK
+        string customer_id FK
+        string name
+        string email
+        string role
     }
 
     INTERACTIONS {
-        varchar id PK
-        varchar customer_id FK
-        varchar contact_id FK
-        enum type "email | call | meeting | note"
+        string id PK
+        string customer_id FK
+        string contact_id FK
+        string type
         date occurred_at
-        text notes
+        string notes
     }
 
     AI_INSIGHTS {
-        varchar customer_id PK_FK
-        text summary
-        text next_action
+        string customer_id PK
+        string summary
+        string next_action
         int priority_score
-        text priority_reason
-        datetime generated_at
+        string priority_reason
+        date generated_at
     }
 ```
+
+`status` is `prospect` or `customer`. `type` is `email`, `call`, `meeting`, or `note`. `AI_INSIGHTS.customer_id` is also an FK to `customers`.
 
 **Design notes:**
 - `AI_INSIGHTS` is a cache table, one row per customer, regenerated on demand — keeps AI calls off the hot path of every page load.
@@ -67,8 +69,8 @@ classDiagram
         +str name
         +str status
         +date created_at
-        +List~Contact~ contacts
-        +List~Interaction~ interactions
+        +Contact contacts
+        +Interaction interactions
     }
 
     class Contact {
@@ -98,14 +100,14 @@ classDiagram
     }
 
     class CustomerRepository {
-        +get_all() List~Customer~
+        +get_all() Customer[]
         +get_by_id(id) Customer
         +get_with_relations(id) Customer
     }
 
     class InteractionRepository {
-        +get_by_customer(customer_id) List~Interaction~
-        +get_recent(customer_id, limit) List~Interaction~
+        +get_by_customer(customer_id) Interaction[]
+        +get_recent(customer_id, limit) Interaction[]
     }
 
     class AIInsightRepository {
@@ -136,7 +138,7 @@ classDiagram
         -interaction_repo: InteractionRepository
         -insight_repo: AIInsightRepository
         -priority_service: PriorityService
-        +list_customers_with_priority() List~CustomerSummaryDTO~
+        +list_customers_with_priority() CustomerSummaryDTO[]
         +get_customer_detail(id) CustomerDetailDTO
         +get_or_generate_insights(id) AIInsight
         +refresh_insights(id) AIInsight
